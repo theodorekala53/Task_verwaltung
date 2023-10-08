@@ -1,40 +1,51 @@
-# Créez une liste vide pour stocker les tâches
-liste_de_taches = []
+################################
+# Autor: Theodore Kala Noubissi
+################################
+import pandas as pd
+import openpyxl
+
+gaesteListe = pd.DataFrame(columns=["Name"])
+gaesteListe = pd.read_excel("gaeste_liste.xlsx")
 
 while True:
-    # Affichez le menu
-    print("Gestionnaire de tâches")
-    print("1. Ajouter une tâche")
-    print("2. Afficher les tâches")
-    print("3. Supprimer une tâche")
-    print("4. Quitter")
+    print("----------------------")
+    print("Gäste verwalten")
+    print("----------------------")
+    print("1. Gast hinzufügen")
+    print("2. Liste anzeigen")
+    print("3. Gast löschen")
+    print("4. Gästliste in Excel speichert")
+    print("5. Programm beenden")
+    
+    auswahl = int(input("bitte ihre Auswahl: "))
+    
+    
+    if auswahl == 1:
+        gast = input("Name bitte eingeben: ")
+        # Créez un DataFrame pour le nouveau nom et concaténez-le avec le DataFrame principal
+        new_row = pd.DataFrame({"Name": [gast]})
+        gaesteListe = pd.concat([gaesteListe, new_row], ignore_index=True)
+        print(f"Neuer Gast: {gast}")
 
-    choix = input("Choisissez une option : ")
-
-    if choix == "1":
-        tache = input("Entrez la description de la tâche : ")
-        liste_de_taches.append(tache)
-        print("Tâche ajoutée.")
-
-    elif choix == "2":
-        print("Liste des tâches :")
-        for i, tache in enumerate(liste_de_taches, start=1):
-            print(f"{i}. {tache}")
-
-    elif choix == "3":
-        if len(liste_de_taches) == 0:
-            print("La liste des tâches est vide.")
+        # Sauvegardez le DataFrame dans un fichier Excel
+        gaesteListe.to_excel("gaeste_liste.xlsx", index=False)
+    elif auswahl == 2:
+        print("------------ Aufgabe ----------")
+        if len(gaesteListe) == 0:
+            print("Die Liste ist Leer!!")
         else:
-            numero = int(input("Entrez le numéro de la tâche à supprimer : "))
-            if numero >= 1 and numero <= len(liste_de_taches):
-                tache_supprimee = liste_de_taches.pop(numero - 1)
-                print(f"Tâche supprimée : {tache_supprimee}")
-            else:
-                print("Numéro de tâche invalide.")
-
-    elif choix == "4":
-        print("Au revoir !")
-        break
-
-    else:
-        print("Option invalide. Veuillez choisir une option valide.")
+            for i, gast in enumerate(gaesteListe["Name"], start=1):
+                print(f"{i}. {gast}")
+        print("-------------------------------")
+    elif auswahl == 3:
+        number = int(input("bitte gaste Nummer eingeben: "))
+        if number >= 1 and number <= len(gaesteListe):
+            delete_gaste = gaesteListe.pop(number - 1)
+            print(f"{delete_gaste} wurde gelöscht")
+    elif auswahl == 4:
+        df = pd.DataFrame(gaesteListe)
+        df.to_excel("gaestliste.xlsx", index=False)
+    elif auswahl == 5:
+        print("Aufwiedersehen")
+        break        
+    
